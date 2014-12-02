@@ -7,7 +7,7 @@ library(RJSONIO)
 library(sentiment)
 
 ################################################################################
-setwd('C:/Users/Jinyi/Dropbox/Jinyi/Github/twitteR')
+setwd('C:/Users/Jinyi/Dropbox/Jinyi/Github/data-mining-twitteR')
 download.file(url='http://curl.haxx.se/ca/cacert.pem',destfile='cacert.pem')
 
 requestURL <- 'https://api.twitter.com/oauth/request_token'
@@ -27,12 +27,25 @@ twitCred$handshake(cainfo="cacert.pem")
 save(twitCred, file = "twitter_auth.Rdata")
 
 ################################################################################
-setwd("C:/Users/Jinyi/Dropbox/Jinyi/Github/twitteR")
+setwd("C:/Users/Jinyi/Dropbox/Jinyi/Github/data-mining-twitteR")
 load("twitter_auth.Rdata")
 registerTwitterOAuth(twitCred)
 
-some_tweets = searchTwitter('gym', n=1500, cainfo="cacert.pem",
-                            geocode='44.6478,-63.5714,10000mi')
+geocode_list = list()
+geocode_list[[1]] = "44.654813,-63.601594,"
+names(geocode_list)[1] = "Halifax"
+
+region = 'Halifax'
+radius = 100
+key_word = c('#Halifax')
+
+geocode_string = paste(geocode_list[region],radius,'mi', sep='')
+some_tweets = searchTwitter(searchString = key_word, 
+                            n=1500, 
+                         #   geocode= geocode_string,
+                            since='2001-03-01',
+                            lang = 'en',
+                            cainfo="cacert.pem")
 
 some_txt = sapply(some_tweets, function(x) x$getText())
 
